@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#Generate new external strain names for DC-DFS-PHL
+echo "Enter the starting index"
+read index_start
+echo "Enter the final index"
+read index_stop
+echo "Enter the collection year"
+read year
+for number in $(seq ${index_start} ${index_stop})
+do 
+	printf "hCoV-19/USA/DC-DFS-PHL-0"${number}"/"${year}"\n"
+done
+
