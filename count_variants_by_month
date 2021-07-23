@@ -1,0 +1,1928 @@
+## Go to GISAID and go to the Search tab
+## Set location to "District of Columbia"
+## Select all viral sequences and download "Input for Augur Pipeline"
+## Rename the metadata file in the format: gisaid*.tsv
+## Make a copy of the .tsv file. In one file, delete column E "date". This will be the file you use for submission date.
+## In the other file, delete column AA "date_submitted". This will be the file you use for collection date.
+## Be sure to run the script in the same directory as only ONE .tsv file at a time.
+
+
+#### JANUARY 2020
+
+grep "2020-01" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "JANUARY 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### FEBRUARY 2020
+
+grep "2020-02" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "FEBRUARY 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### MARCH 2020
+
+grep "2020-03" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "MARCH 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### APRIL 2020
+
+grep "2020-04" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "APRIL 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### MAY 2020
+
+grep "2020-05" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "MAY 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### JUNE 2020
+
+grep "2020-06" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "JUNE 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### JULY 2020
+
+grep "2020-07" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "JULY 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### AUGUST 2020
+
+grep "2020-08" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "AUGUST 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### SEPTEMBER 2020
+
+grep "2020-09" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "SEPTEMBER 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### OCTOBER 2020
+
+grep "2020-10" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "OCTOBER 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### NOVEMBER 2020
+
+grep "2020-11" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "NOVEMBER 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### DECEMBER 2020
+
+grep "2020-12" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "DECEMBER 2020"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### JANUARY 2021
+
+grep "2021-01" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "JANUARY 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### FEBRUARY 2021
+
+grep "2021-02" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "FEBRUARY 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### MARCH 2021
+
+grep "2021-03" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "MARCH 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### APRIL 2021
+
+grep "2021-04" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "APRIL 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### MAY 2021
+
+grep "2021-05" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "MAY 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### JUNE 2021
+
+grep "2021-06" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "JUNE 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### JULY 2021
+
+grep "2021-07" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "JULY 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### AUGUST 2021
+
+grep "2021-08" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "AUGUST 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### SEPTEMBER 2021
+
+grep "2021-09" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "SEPTEMBER 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### OCTOBER 2021
+
+grep "2021-10" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "OCTOBER 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### NOVEMBER 2021
+
+grep "2021-11" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "NOVEMBER 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
+
+#### DECEMBER 2021
+
+grep "2021-12" gisaid*.tsv > input_by_month.tsv
+printf '\n%s\n'
+echo "DECEMBER 2021"
+printf '\n%s\n'
+echo "For SARS-CoV-2 sequences publicly available in GISAID."
+printf '\n%s\n'
+(printf '%s: ' "Total SARS-CoV-2 in DC" ; grep -c "hCoV-19" input_by_month.tsv)
+(printf '%s: ' "SARS-CoV-2 sequenced by DFS" ; grep -c "DC-DFS-PHL" input_by_month.tsv)
+## looking for variants of interest
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.427" | sort | uniq > DC_B1427.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.429" | sort | uniq > DC_B1429.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.525" | sort | uniq > DC_B1525.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.526" | sort | uniq > DC_B1526.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.1" | sort | uniq > DC_B16171.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.3" | sort | uniq > DC_B16173.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.2" | sort | uniq > DC_P2.tsv
+
+## looking for variants of concern
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.1.7" | sort | uniq > DC_B117.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "P.1" | sort | uniq > DC_P1.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.351" | sort | uniq > DC_B1351.tsv
+tail +2 input_by_month.tsv | cut -f 1-27 | grep -w "B.1.617.2" | sort | uniq > DC_B16172.tsv
+cat DC*.tsv > DC_all_variants.tsv
+VOI1=$(grep -cw "B.1.427" DC_all_variants.tsv)
+VOI2=$(grep -cw "B.1.429" DC_all_variants.tsv)
+VOI3=$(grep -cw "B.1.525" DC_all_variants.tsv)
+VOI4=$(grep -cw "B.1.526" DC_all_variants.tsv)
+VOI5=$(grep -cw "B.1.617.1" DC_all_variants.tsv)
+VOI6=$(grep -cw "B.1.617.3" DC_all_variants.tsv)
+VOI7=$(grep -cw "P.2" DC_all_variants.tsv)
+VOC1=$(grep -cw "B.1.1.7" DC_all_variants.tsv)
+VOC2=$(grep -cw "P.1" DC_all_variants.tsv)
+VOC3=$(grep -cw "B.1.351" DC_all_variants.tsv)
+VOC4=$(grep -cw "B.1.617.2" DC_all_variants.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest in DC"
+printf "\tB.1.427:  %s\t%s\n" "${VOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${VOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${VOI3}"
+printf "\tB.1.526: %s\t%s\n" "${VOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${VOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${VOI6}"
+printf "\tP.2: %s\t%s\n" "${VOI7}"
+echo "Total Variants of Concern in DC"
+printf "\tB.1.1.7:  %s\t%s\n" "${VOC1}"
+printf "\tP.1:  %s\t%s\n" "${VOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${VOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${VOC4}"
+tail +2 DC_all_variants.tsv | cut -f 1-27 | grep -w "DC-DFS-PHL" | sort | uniq > DC_PHL.tsv
+DFSVOI1=$(grep -cw "B.1.427" DC_PHL.tsv)
+DFSVOI2=$(grep -cw "B.1.429" DC_PHL.tsv)
+DFSVOI3=$(grep -cw "B.1.525" DC_PHL.tsv)
+DFSVOI4=$(grep -cw "B.1.526" DC_PHL.tsv)
+DFSVOI5=$(grep -cw "B.1.617.1" DC_PHL.tsv)
+DFSVOI6=$(grep -cw "B.1.617.3" DC_PHL.tsv)
+DFSVOI7=$(grep -cw "P.2" DC_PHL.tsv)
+DFSVOC1=$(grep -cw "B.1.1.7" DC_PHL.tsv)
+DFSVOC2=$(grep -cw "P.1" DC_PHL.tsv)
+DFSVOC3=$(grep -cw "B.1.351" DC_PHL.tsv)
+DFSVOC4=$(grep -cw "B.1.617.2" DC_PHL.tsv)
+printf '\n%s\n'
+echo "Total Variants of Interest sequenced by DFS PHL"
+printf "\tB.1.427:  %s\t%s\n" "${DFSVOI1}"
+printf "\tB.1.429:  %s\t%s\n" "${DFSVOI2}"
+printf "\tB.1.525:  %s\t%s\n" "${DFSVOI3}"
+printf "\tB.1.526: %s\t%s\n" "${DFSVOI4}"
+printf "\tB.1.617.1: %s\t%s\n" "${DFSVOI5}"
+printf "\tB.1.617.3: %s\t%s\n" "${DFSVOI6}"
+printf "\tP.2: %s\t%s\n" "${DFSVOI7}"
+echo "Total Variants of Concern sequenced by DFS PHL"
+printf "\tB.1.1.7:  %s\t%s\n" "${DFSVOC1}"
+printf "\tP.1:  %s\t%s\n" "${DFSVOC2}"
+printf "\tB.1.351:  %s\t%s\n" "${DFSVOC3}"
+printf "\tB.1.617.2:  %s\t%s\n" "${DFSVOC4}"
+printf '\n%s\n'
+rm DC_all_variants.tsv DC_B117.tsv DC_B1351.tsv DC_B1427.tsv DC_B1429.tsv DC_B1525.tsv DC_B1526.tsv DC_B16171.tsv DC_B16172.tsv DC_B16173.tsv DC_P1.tsv DC_P2.tsv DC_PHL.tsv
+rm input_by_month.tsv
