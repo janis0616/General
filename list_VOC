@@ -2,4 +2,5 @@
 #Make a list of variants of concern, starting with a tsv file 
 #Run this script in a directory with one tsv file named gisaid*.tsv
 #Change $4 to another number if the pango lineage is not the 4th column
+#Current VOCs are: B.1.1.7, B.1.351, P.1, and B.1.616.2 (and their sub-lineages). May have to change as VOCs are updated by CDC.
 awk -F"\t" '$4 ~/B.1.1.7/;$4 ~/B.1.351/;$4 ~/P.1/;$4 ~/B.1.617.2/;$4 ~/AY/ {print $0}' gisaid*.tsv > all_VOC.tsv
