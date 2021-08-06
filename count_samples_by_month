@@ -1,0 +1,12 @@
+#!/bin/bash
+#make sure to run this script in a folder with one tsv file of DC sequences named gisaid*.tsv (downloaded from GISAID; download --> input for the Augur pipeline)
+#extract a particular month from the file
+awk '$5~/2021-02/' gisaid*.tsv > input_by_month.tsv
+#print the month
+printf "SARS-CoV-2 samples from DC - collected 2021-02\n\n"
+#print the number/percentage of samples from that month for each facility
+printf "\nNumber and percentage of samples by submitting laboratory:\tNumber:\tPercentage:\n"
+awk -F"\t" '{print $22}' input_by_month.tsv | sort | uniq -c | sort -nr | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}'
+#print the number/percentage of samples from that month for each facility
+printf "\nNumber and percentage of variants:\tNumber:\tPercentage:\n"
+awk -F"\t" '{print $19}' input_by_month.tsv | sort | uniq -c | sort -nr | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}'
