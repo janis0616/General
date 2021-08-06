@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #make sure to run this script in a folder with one tsv file of DC sequences named gisaid*.tsv (downloaded from GISAID; download --> input for the Augur pipeline)
-#input the desired date in lines 6 and 8
+#input the desired date in lines 6 and 8; to change from collection date to submission date, change $5 to $27 in line 6 (and change text description in line 8)
 #
 #extract a particular month from the file
 awk '$5~/2021-07/' gisaid*.tsv > input_by_month.tsv
