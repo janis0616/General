@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#Combination of filter_VOC.sh and compare_VOC_lists.sh
+#Make sure you have a file of all DC SARS-CoV-2 sequences from GISAID called *metadata.tsv (download as Input for Augur Pipeline)
+
+#Filter a tsv file to show only variants of concern
+awk -F"\t" '$19 ~ "B.1.1.7" || $19 ~ "Q." || $19 ~ "B.1.351" || $19 ~ "P.1" || $19 ~ "B.1.617.2" || $19 ~ "AY." {print $5, "\t\t", $1, "\t", $27, "\t", $19, "\t", $21, "\t", $22}' *metadata.tsv > VOC1.tsv
+
+#Compare a new list of VOCs to the old list (tsv format). Make a file that contains only the items found in the new list that are not already in the old list.
+comm -2 -3 <(sort VOC1.tsv) <(sort VOC_current_master_list.tsv) > VOC2.tsv
