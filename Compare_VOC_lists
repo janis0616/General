@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#Compare a new list of VOCs to the old list (tsv format). Make a file that contains only the items found in the new list that are not already in the old list.
+#Change the file names as needed
+
+comm -2 -3 <(sort VOC_new_list.tsv) <(sort VOC_current_master_list.tsv) > new_VOCs.tsv
