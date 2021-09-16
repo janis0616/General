@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-#Filter a tsv file to show only variants of concern
-#Run this script in a directory with one tsv file named *metadata.tsv (download Input for Augur Pipeline from GISAID).
-#Change $19 to another number if the pango lineage is not the 19th column 
-awk -F"\t" '$19 ~ "B.1.1.7" || $19 ~ "Q." || $19 ~ "B.1.351" || $19 ~ "P.1" || $19 ~ "B.1.617.2" || $19 ~ "AY." {print $0}' *metadata.tsv > VOC1.tsv
