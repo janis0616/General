@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #Make sure you have a file of all DC SARS-CoV-2 sequences from GISAID called *metadata.tsv (download as Input for Augur Pipeline) and a file of your previous sequences, called all_VOC_*.tsv (with strain names in column 3)
-#Output is new_VOCs.tsv, which contains all VOCs that are in the newly-downloaded file but not in the old file
+#Output is difflist.tsv, which contains all VOCs that are in the newly-downloaded file but not in the old file, and VOCs.tsv, which contains all info for VOCs
 #There is a blank column for adding LIMS IDs
 
 #Filter a tsv file to show only variants of concern
