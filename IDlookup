@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#Look up LIMS IDs, based on strain name. 
+#LIMS IDs must be in a txt file called LIMS.txt
+#Reference table must be called REF.txt
+#output is called output.txt and is the full line from the reference table
+
+grep -Ff LIMS.txt REF.txt > output.txt
+must be in a tsv file called *REF.tsv, with the format column 1 - LIMS IDs, column 2 - sorting index, column 3 - strain names (just copy-paste from the logbook).
