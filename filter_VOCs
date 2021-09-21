@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 #Make sure you have a file of all DC SARS-CoV-2 sequences from GISAID called *metadata.tsv (download as Input for Augur Pipeline) and a file of your previous sequences, called all_VOC_*.tsv (with strain names in column 3)
-#Output is difflist.tsv, which contains all VOCs that are in the newly-downloaded file but not in the old file, and VOCs.tsv, which contains all info for VOCs
-#There is a blank column for adding LIMS IDs
+#Output is VOC_output.tsv, which has all the info for VOCs that are not on the previous VOC list
+#There are blank columns for adding LIMS IDs and WHO designations
+
+#define trim function (from stack overflow)
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"   
+    printf '%s\n' "$var"
+}
 
 #Filter a tsv file to show only variants of concern
-awk -F"\t" '$19 ~ "B.1.1.7" || $19 ~ "Q." || $19 ~ "B.1.351" || $19 ~ "P.1" || $19 ~ "B.1.617.2" || $19 ~ "AY." {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", $21, "\t", $22}' *metadata.tsv > VOCs.tsv
+awk -F"\t" '$19 ~ "B.1.1.7" || $19 ~ "Q." || $19 ~ "B.1.351" || $19 ~ "P.1" || $19 ~ "B.1.617.2" || $19 ~ "AY." {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv > VOCs.tsv
 #Transfer the strain names from the new file and the master list to new files
 awk -F"\t" '{print $3}' VOCs.tsv > VOC_names.tsv
 awk -F"\t" '{print $3}' all_VOC_*.tsv > masterlist_names.tsv
@@ -15,7 +25,16 @@ cat masterlist_names.tsv | sed 's/^[ \t]*//;s/[ \t]*$//' > oldlist.tsv
 sort newlist.tsv > list1.tsv
 sort oldlist.tsv > list2.tsv
 #Make a list of the strain names in the new file that are not in the master list; put this in difflist.tsv
-comm -2 -3 list1.tsv list2.tsv > difflist.tsv
+comm -2 -3 list1.tsv list2.tsv > list3.tsv
+
+#read file line by line; invoke trim function
+while read -r line;
+do
+	trim $line >> difflist.tsv
+done < list3.tsv
+
+grep -Ff difflist.tsv VOCs.tsv > VOC_output.tsv
+
 #Get rid of unnecessary files
 rm VOC_names.tsv
 rm masterlist_names.tsv
@@ -23,3 +42,4 @@ rm newlist.tsv
 rm oldlist.tsv
 rm list1.tsv 
 rm list2.tsv
+rm list3.tsv
