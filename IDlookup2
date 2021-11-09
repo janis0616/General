@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+#User input
+echo "Enter the name of the lookup file"
+read LookupFile
+echo "Enter the name of the reference file"
+read RefFile
+
+#Read the lookup list into an array
+readarray -t List < "${LookupFile}"
+
+#Read the reference list into an array
+Ref=()
+while IFS= read -r line
+do
+	Ref+=("$line")
+done < "${RefFile}"
+
+#Print the lines in the reference list that match the items in the lookup list
+awk 'BEGIN{RS = FS} NR == FNR {List[$1] = 1; next} $1 in List' \
+    <(echo "${List[*]}") <(echo "${Ref[*]}")
