@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
-#Make sure you have a file of all DC SARS-CoV-2 sequences from GISAID called *metadata.tsv (download as Input for Augur Pipeline) and a file of your previous sequences, called all_VOC_*.tsv (with strain names in column 3)
-#Output is VOC_output.tsv, which has all the info for VOCs that are not on the previous VOC list
-#There are blank columns for adding LIMS IDs and WHO designations
+#Outputs list of VOCs, with LIMS IDs filled in 
+#You need: *metadata.tsv (download "Input for Augur Pipeline" from GISAID.org), LIMS.tsv (3 columns, first is LIMS ID, third is external strain name)
 
-#define trim function (from stack overflow)
+#FILTER THE METADATA TSV FILE
+#Filter out only the VOCs and put in a new file called VOCs.tsv, with the columns in a particular order
+awk -F"\t" '$19 == "B.1.617.2" {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv > VOCs.tsv
+awk -F"\t" '$19 ~ "AY." {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv >> VOCs.tsv
+
+#Add WHO designations
+awk -F"\t" '$5 == "B.1.617.2" || $5 ~ "AY." {print $1, "\t", $2, "\t", $3, "\t", $4, "\t", $5, "\t", "Delta", "\t", $7, "\t", $8}' VOCs.tsv > VOCs2.tsv
+
+#Take external strain names from VOCs.tsv and put in separate file lookup.tsv
+awk -F"\t" '{print $3}' VOCs.tsv > lookup.tsv
+
+#trim function 
 trim() {
     local var="$*"
     # remove leading whitespace characters
@@ -13,33 +23,18 @@ trim() {
     printf '%s\n' "$var"
 }
 
-#Filter a tsv file to show only variants of concern
-awk -F"\t" '$19 ~ "B.1.1.7" || $19 ~ "Q." || $19 ~ "B.1.351" || $19 ~ "P.1" || $19 ~ "B.1.617.2" || $19 ~ "AY." {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv > VOCs.tsv
-#Transfer the strain names from the new file and the master list to new files
-awk -F"\t" '{print $3}' VOCs.tsv > VOC_names.tsv
-awk -F"\t" '{print $3}' all_VOC_*.tsv > masterlist_names.tsv
-#Take out spaces from before or after each strain name
-cat VOC_names.tsv | sed 's/^[ \t]*//;s/[ \t]*$//' > newlist.tsv
-cat masterlist_names.tsv | sed 's/^[ \t]*//;s/[ \t]*$//' > oldlist.tsv
-#Sort the lists, because this will be needed for the comm command
-sort newlist.tsv > list1.tsv
-sort oldlist.tsv > list2.tsv
-#Make a list of the strain names in the new file that are not in the master list; put this in difflist.tsv
-comm -2 -3 list1.tsv list2.tsv > list3.tsv
-
-#read file line by line; invoke trim function
+#Remove any white space in lookup.tsv
 while read -r line;
 do
-	trim $line >> difflist.tsv
-done < list3.tsv
+	trim $line >> lookup2.tsv
+done < lookup.tsv
 
-grep -Ff difflist.tsv VOCs.tsv > VOC_output.tsv
+#Show any rows in the reference table that matches an item in the lookup list
+grep -Ff lookup2.tsv LIMS.tsv > lookup3.tsv
 
-#Get rid of unnecessary files
-rm VOC_names.tsv
-rm masterlist_names.tsv
-rm newlist.tsv
-rm oldlist.tsv
-rm list1.tsv 
-rm list2.tsv
-rm list3.tsv
+#Sort output files by external strain name (column 3)
+sort -k3 -n VOCs2.tsv > VOCs_output.tsv
+sort -k3 -n lookup3.tsv > lookup_output.tsv
+
+#Remove unneeded files
+rm VOCs.tsv VOCs2.tsv lookup.tsv lookup2.tsv lookup3.tsv
