@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #Outputs list of VOCs, with LIMS IDs filled in 
 #You need: *metadata.tsv (download "Input for Augur Pipeline" from GISAID.org), LIMS.tsv (3 columns, first is LIMS ID, third is external strain name)
+#Output is VOCs_output.tsv (with all VOCs and their metadata) and lookup_output.tsv (with LIMS IDs matched to external strain names, so that you can fill in column 2 of VOCs_output.tsv)
 
 #FILTER THE METADATA TSV FILE
 #Filter out only the VOCs and put in a new file called VOCs.tsv, with the columns in a particular order
