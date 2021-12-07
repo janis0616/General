@@ -7,9 +7,12 @@
 #Filter out only the VOCs and put in a new file called VOCs.tsv, with the columns in a particular order
 awk -F"\t" '$19 == "B.1.617.2" {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv > VOCs.tsv
 awk -F"\t" '$19 ~ "AY." {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv >> VOCs.tsv
+awk -F"\t" '$19 ~ "B.1.1.529" {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv >> VOCs.tsv
+awk -F"\t" '$19 ~ "BA." {print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv >> VOCs.tsv
 
 #Add WHO designations
 awk -F"\t" '$5 == "B.1.617.2" || $5 ~ "AY." {print $1, "\t", $2, "\t", $3, "\t", $4, "\t", $5, "\t", "Delta", "\t", $7, "\t", $8}' VOCs.tsv > VOCs2.tsv
+awk -F"\t" '$5 == "B.1.1.529" || $5 ~ "BA." {print $1, "\t", $2, "\t", $3, "\t", $4, "\t", $5, "\t", "Omicron", "\t", $7, "\t", $8}' VOCs.tsv > VOCs2.tsv
 
 #Take external strain names from VOCs.tsv and put in separate file lookup.tsv
 awk -F"\t" '{print $3}' VOCs.tsv > lookup.tsv
