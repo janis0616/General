@@ -21,6 +21,8 @@ echo "from DC (total)"
 printf "\n"
 #Delta
 awk -F"\t" '$1 ~ "B.1.617.2" || $1 ~ /AY\..../ {sum+=$2} END {printf "Delta (B.1.617.2, AY.#):" "\t" sum "\n"}' DCtotal.tsv
+#Omicron
+awk -F"\t" '$1 ~ "B.1.1.529" || $1 ~ /BA\..../ {sum+=$2} END {printf "Omicron (B.1.1.529):" "\t" sum "\n"}' DCtotal.tsv
 #Alpha
 awk -F"\t" '$1 ~ "B.1.1.7" || $1 ~ /Q\..../ {sum+=$2} END {printf "Alpha (B.1.1.7, Q.#):" "\t\t" sum "\n"}' DCtotal.tsv
 #Gamma
@@ -52,6 +54,8 @@ printf "\n"
 
 #Delta
 awk -F"\t" '$1 ~ "B.1.617.2" || $1 ~ /AY\..../ {sum+=$2} END {printf "Delta (B.1.617.2, AY.#):" "\t" sum "\n"}' PHLonly.tsv
+#Omicron
+awk -F"\t" '$1 ~ "B.1.1.529" || $1 ~ /BA\..../ {sum+=$2} END {printf "Omicron (B.1.1.529):" "\t" sum "\n"}' PHLonly.tsv
 #Alpha
 awk -F"\t" '$1 ~ "B.1.1.7" || $1 ~ /Q\..../ {sum+=$2} END {printf "Alpha (B.1.1.7, Q.#):" "\t\t" sum "\n"}' PHLonly.tsv
 #Gamma
