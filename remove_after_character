@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-#For a list of items, remove everything after a certain character and output the new values. 
-#In this case, the character is an underscore. But that can be replaced with anything. Just put the character after the "b=${a%%\" in place of _
+#For a list of items, remove everything after the first non-digit and output the new values. 
 #Make sure there is a file called "remove.txt" in the working directory, which has a list of the values, each value on a separate line.
 while read a; do
-	b=${a%%\_*}
+	b=${a%%[^0-9]*}
 	echo $b
 done < "remove.txt"
-
