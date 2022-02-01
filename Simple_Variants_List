@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#Use on a metadata.tsv file from "Input for Augur Pipeline" from GISAID
+#There are empty columns for adding LIMS IDs and WHO designations
+#Copy-paste this data into all_variants_DC_[date].xlsx; it should go at the top of the page, in order of most recent submission date to oldest submission date; highlight the newly added items and get rid of highlighting on any old items
+#If there are any CDC-2 items with "not yet available" as the LIMS ID, check if the LIMS ID is now available (in CDC NS3 website)
+#Send all_variants_DC_[date].xlsx to Channyn and Kristine by noon on Mondays
+#Copy-paste only the PHL and CDC-2 data into all_variants_PHLonly_[date].xlsx; delete old data; nothing needs to be highlighted
+#Send all_variants_PHLonly_[date].xlsx to Tanisha; include that this is the metadata request for Sharmila Chatterjee and Chithenga Sithembile
+
+#Put the columns in a particular order
+awk -F"\t" '{print $27, "\t", "\t", $1, "\t", $5, "\t", $19, "\t", "\t", $21, "\t", $22}' *metadata.tsv > VOCs.tsv
