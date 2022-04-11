@@ -9,11 +9,9 @@ printf "\nTotals\n"
 printf "\n\n"
 
 #Make a spreadsheet of the number/percentage of variants for all labs in DC
-#printf "\nNumber and percentage of variants in DC:\nLineage:\tNum:\tPerc:\n"
 awk -F"\t" '{print $13}' gisaid*.tsv | sort | uniq -c | sort -nr | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > "DCtotal.tsv"
 
 #Make a spreadsheet of the number/percentage of variants for DC-DFS-PHL
-#printf "\nNumber and percentage of variants for PHL:\nLineage:\tNum:\tPerc:\n"
 awk -F"\t" '{if ($1 ~ "DFS-PHL") print $13;}' gisaid*.tsv | sort | uniq -c | sort -nr | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > "PHLonly.tsv"
 
 #Search the spreadsheets and report out the variant counts
