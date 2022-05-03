@@ -1,81 +1,99 @@
 #!/usr/bin/env bash
-#Run this script in a folder with one tsv file of DC sequences named gisaid*.tsv (downloaded from GISAID; download --> Sequencing Technology Metadata)
-#To see sub-lineage breakdowns, open the files DCtotal.tsv and PHLonly.tsv and sort by lineage name.
+#Run this script in a folder with one tsv file of DC sequences named *.tsv (downloaded from GISAID; download --> Sequencing Technology Metadata)
+#To see other sub-lineage breakdowns, open the files DC.tsv and PHL.tsv and sort by lineage name.
 
-#Print the total number of sequences for DC and DC-DFS-PHL
+#Print the number of sequences for DC and DC-DFS-PHL
 printf "\nTotals\n"
-(printf '%s:\t\t' "Total SARS-CoV-2 GISAID submissions in DC" ; grep -c "hCoV-19" gisaid*.tsv)
-(printf '%s:\t' "Total SARS-CoV-2 GISAID submissions by DC-DFS-PHL" ; grep -c "DC-DFS-PHL" gisaid*.tsv)
-printf "\n\n"
+(printf '%s:\t\t' "SARS-CoV-2 GISAID submissions in DC" ; grep -c "hCoV-19" *.tsv)
+(printf '%s:\t' "SARS-CoV-2 GISAID submissions by DC-DFS-PHL" ; grep -c "DC-DFS-PHL" *.tsv)
+printf "\n"
 
 #Make a spreadsheet of the number/percentage of variants for all labs in DC
-awk -F"\t" '{print $13}' gisaid*.tsv | sort | uniq -c | sort -nr | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > "DCtotal.tsv"
+#printf "\nNumber and percentage of variants in DC:\nLineage:\tNum:\tPerc:\n"
+awk -F"\t" '{print $13}' *.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > "DC.tsv"
 
 #Make a spreadsheet of the number/percentage of variants for DC-DFS-PHL
-awk -F"\t" '{if ($1 ~ "DFS-PHL") print $13;}' gisaid*.tsv | sort | uniq -c | sort -nr | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > "PHLonly.tsv"
+#printf "\nNumber and percentage of variants for PHL:\nLineage:\tNum:\tPerc:\n"
+awk -F"\t" '{if ($1 ~ "DFS-PHL") print $13;}' *.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > "PHL.tsv"
 
 #Search the spreadsheets and report out the variant counts
-printf "\n\n"
-echo "from DC (total)"
+printf "\n"
+echo "DC"
 printf "\n"
 #Delta
-awk -F"\t" '$1 ~ "B.1.617.2" || $1 ~ /AY\..../ {sum+=$2} END {printf "Delta (B.1.617.2, AY.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.617.2" || $1 ~ /AY\..../ {sum+=$2} END {printf "Delta (B.1.617.2, AY.#):" "\t" sum "\n"}' DC.tsv
 #Omicron 
-awk -F"\t" '$1 ~ "B.1.1.529" || $1 ~ /BA\..../ {sum+=$2} END {printf "Omicron (B.1.1.529, BA.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.1.529" || $1 ~ /BA\..../ {sum+=$2} END {printf "Omicron (B.1.1.529, BA.#):" "\t" sum "\n"}' DC.tsv
+#Omicron sub-lineages
+#awk -F"\t" '$1 ~ /BA.1[\." "]/ {sum+=$2} END {printf "BA.1 and sub-lineages:" "\t" sum "\n"}' DC.tsv
+awk -F"\t" '$1 ~ /BA.1.1[\." "]/ {sum+=$2} END {printf "BA.1.1 and sub-lineages:" "\t" sum "\n"}' DC.tsv
+awk -F"\t" '$1 ~ /BA.2[\." "]/ {sum+=$2} END {printf "BA.2 and sub-lineages:" "\t" sum "\n"}' DC.tsv
+awk -F"\t" '$1 ~ "BA.2.12.1" {sum+=$2} END {printf "BA.2.12.1:" "\t" sum "\n"}' DC.tsv
+#awk -F"\t" '$1 ~ "BA.3" {sum+=$2} END {printf "BA.3 and sub-lineages:" "\t" sum "\n"}' DC.tsv
+#awk -F"\t" '$1 ~ "BA.4" {sum+=$2} END {printf "BA.4 and sub-lineages:" "\t" sum "\n"}' DC.tsv
+#awk -F"\t" '$1 ~ "BA.5" {sum+=$2} END {printf "BA.5 and sub-lineages:" "\t" sum "\n"}' DC.tsv
 #Alpha
-awk -F"\t" '$1 ~ "B.1.1.7" || $1 ~ /Q\..../ {sum+=$2} END {printf "Alpha (B.1.1.7, Q.#):" "\t\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.1.7" || $1 ~ /Q\..../ {sum+=$2} END {printf "Alpha (B.1.1.7, Q.#):" "\t\t" sum "\n"}' DC.tsv
 #Gamma
-awk -F"\t" '$1 ~ "P.1" || $1 ~ /P\.1\..../ {sum+=$2} END {printf "Gamma (P.1, P.1.#):" "\t\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "P.1" || $1 ~ /P\.1\..../ {sum+=$2} END {printf "Gamma (P.1, P.1.#):" "\t\t" sum "\n"}' DC.tsv
 #Zeta
-awk -F"\t" '$1 ~ "P.2" || $1 ~ /P\.2\..../ {sum+=$2} END {printf "Zeta (P.2, P.2.#):" "\t\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "P.2" || $1 ~ /P\.2\..../ {sum+=$2} END {printf "Zeta (P.2, P.2.#):" "\t\t" sum "\n"}' DC.tsv
 #Beta
-awk -F"\t" '$1 ~ "B.1.351" || $1 ~ /B\.1\.351\..../ {sum+=$2} END {printf "Beta (B.1.351, B.1.351.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.351" || $1 ~ /B\.1\.351\..../ {sum+=$2} END {printf "Beta (B.1.351, B.1.351.#):" "\t" sum "\n"}' DC.tsv
 #Kappa
-awk -F"\t" '$1 ~ "B.1.617.1" {sum+=$2} END {printf "Kappa (B.1.617.1):" "\t\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.617.1" {sum+=$2} END {printf "Kappa (B.1.617.1):" "\t\t" sum "\n"}' DC.tsv
 #B.1.617.3
-awk -F"\t" '$1 ~ "B.1.617.3" {sum+=$2} END {printf "[None] (B.1.617.3):" "\t\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.617.3" {sum+=$2} END {printf "[None] (B.1.617.3):" "\t\t" sum "\n"}' DC.tsv
 #Epsilon1
-awk -F"\t" '$1 ~ "B.1.427" || $1 ~ /B\.1\.427\..../ {sum+=$2} END {printf "Epsilon (B.1.427, B.1.427.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.427" || $1 ~ /B\.1\.427\..../ {sum+=$2} END {printf "Epsilon (B.1.427, B.1.427.#):" "\t" sum "\n"}' DC.tsv
 #Epsilon2
-awk -F"\t" '$1 ~ "B.1.429" || $1 ~ /B\.1\.429\..../ {sum+=$2} END {printf "Epsilon (B.1.429, B.1.429.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.429" || $1 ~ /B\.1\.429\..../ {sum+=$2} END {printf "Epsilon (B.1.429, B.1.429.#):" "\t" sum "\n"}' DC.tsv
 #Eta
-awk -F"\t" '$1 ~ "B.1.525" || $1 ~ /B\.1\.525\..../ {sum+=$2} END {printf "Eta (B.1.525, B.1.525.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.525" || $1 ~ /B\.1\.525\..../ {sum+=$2} END {printf "Eta (B.1.525, B.1.525.#):" "\t" sum "\n"}' DC.tsv
 #Iota
-awk -F"\t" '$1 ~ "B.1.526" || $1 ~ /B\.1\.526\..../ {sum+=$2} END {printf "Iota (B.1.526, B.1.526.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.526" || $1 ~ /B\.1\.526\..../ {sum+=$2} END {printf "Iota (B.1.526, B.1.526.#):" "\t" sum "\n"}' DC.tsv
 #Mu
-awk -F"\t" '$1 ~ "B.1.621" || $1 ~ /B\.1\.621\..../ {sum+=$2} END {printf "Mu (B.1.621, B.1.621.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "B.1.621" || $1 ~ /B\.1\.621\..../ {sum+=$2} END {printf "Mu (B.1.621, B.1.621.#):" "\t" sum "\n"}' DC.tsv
 #Lambda
-awk -F"\t" '$1 ~ "C.37" || $1 ~ /C\.37\..../ {sum+=$2} END {printf "Lambda (C.37, C.37.#):" "\t" sum "\n"}' DCtotal.tsv
+awk -F"\t" '$1 ~ "C.37" || $1 ~ /C\.37\..../ {sum+=$2} END {printf "Lambda (C.37, C.37.#):" "\t" sum "\n"}' DC.tsv
 
 printf "\n\n"
-echo "from DC-DFS-PHL"
+echo "DC-DFS-PHL"
 printf "\n"
 
 #Delta
-awk -F"\t" '$1 ~ "B.1.617.2" || $1 ~ /AY\..../ {sum+=$2} END {printf "Delta (B.1.617.2, AY.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.617.2" || $1 ~ /AY\..../ {sum+=$2} END {printf "Delta (B.1.617.2, AY.#):" "\t" sum "\n"}' PHL.tsv
 #Omicron 
-awk -F"\t" '$1 ~ "B.1.1.529" || $1 ~ /BA\..../ {sum+=$2} END {printf "Omicron (B.1.1.529, BA.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.1.529" || $1 ~ /BA\..../ {sum+=$2} END {printf "Omicron (B.1.1.529, BA.#):" "\t" sum "\n"}' PHL.tsv
+#Omicron sub-lineages
+#awk -F"\t" '$1 ~ /BA.1[\." "]/ {sum+=$2} END {printf "BA.1 and sub-lineages:" "\t" sum "\n"}' PHL.tsv
+awk -F"\t" '$1 ~ /BA.1.1[\." "]/ {sum+=$2} END {printf "BA.1.1 and sub-lineages:" "\t" sum "\n"}' PHL.tsv
+awk -F"\t" '$1 ~ /BA.2[\." "]/ {sum+=$2} END {printf "BA.2 and sub-lineages:" "\t" sum "\n"}' PHL.tsv
+awk -F"\t" '$1 ~ "BA.2.12.1" {sum+=$2} END {printf "BA.2.12.1:" "\t" sum "\n"}' PHL.tsv
+#awk -F"\t" '$1 ~ "BA.3" {sum+=$2} END {printf "BA.3 and sub-lineages:" "\t" sum "\n"}' PHL.tsv
+#awk -F"\t" '$1 ~ "BA.4" {sum+=$2} END {printf "BA.4 and sub-lineages:" "\t" sum "\n"}' PHL.tsv
+#awk -F"\t" '$1 ~ "BA.5" {sum+=$2} END {printf "BA.5 and sub-lineages:" "\t" sum "\n"}' PHL.tsv
 #Alpha
-awk -F"\t" '$1 ~ "B.1.1.7" || $1 ~ /Q\..../ {sum+=$2} END {printf "Alpha (B.1.1.7, Q.#):" "\t\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.1.7" || $1 ~ /Q\..../ {sum+=$2} END {printf "Alpha (B.1.1.7, Q.#):" "\t\t" sum "\n"}' PHL.tsv
 #Gamma
-awk -F"\t" '$1 ~ "P.1" || $1 ~ /P\.1\..../ {sum+=$2} END {printf "Gamma (P.1, P.1.#):" "\t\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "P.1" || $1 ~ /P\.1\..../ {sum+=$2} END {printf "Gamma (P.1, P.1.#):" "\t\t" sum "\n"}' PHL.tsv
 #Zeta
-awk -F"\t" '$1 ~ "P.2" || $1 ~ /P\.2\..../ {sum+=$2} END {printf "Zeta (P.2, P.2.#):" "\t\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "P.2" || $1 ~ /P\.2\..../ {sum+=$2} END {printf "Zeta (P.2, P.2.#):" "\t\t" sum "\n"}' PHL.tsv
 #Beta
-awk -F"\t" '$1 ~ "B.1.351" || $1 ~ /B\.1\.351\..../ {sum+=$2} END {printf "Beta (B.1.351, B.1.351.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.351" || $1 ~ /B\.1\.351\..../ {sum+=$2} END {printf "Beta (B.1.351, B.1.351.#):" "\t" sum "\n"}' PHL.tsv
 #Kappa
-awk -F"\t" '$1 ~ "B.1.617.1" {sum+=$2} END {printf "Kappa (B.1.617.1):" "\t\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.617.1" {sum+=$2} END {printf "Kappa (B.1.617.1):" "\t\t" sum "\n"}' PHL.tsv
 #B.1.617.3
-awk -F"\t" '$1 ~ "B.1.617.3" {sum+=$2} END {printf "[None] (B.1.617.3):" "\t\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.617.3" {sum+=$2} END {printf "[None] (B.1.617.3):" "\t\t" sum "\n"}' PHL.tsv
 #Epsilon1
-awk -F"\t" '$1 ~ "B.1.427" || $1 ~ /B\.1\.427\..../ {sum+=$2} END {printf "Epsilon (B.1.427, B.1.427.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.427" || $1 ~ /B\.1\.427\..../ {sum+=$2} END {printf "Epsilon (B.1.427, B.1.427.#):" "\t" sum "\n"}' PHL.tsv
 #Epsilon2
-awk -F"\t" '$1 ~ "B.1.429" || $1 ~ /B\.1\.429\..../ {sum+=$2} END {printf "Epsilon (B.1.429, B.1.429.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.429" || $1 ~ /B\.1\.429\..../ {sum+=$2} END {printf "Epsilon (B.1.429, B.1.429.#):" "\t" sum "\n"}' PHL.tsv
 #Eta
-awk -F"\t" '$1 ~ "B.1.525" || $1 ~ /B\.1\.525\..../ {sum+=$2} END {printf "Eta (B.1.525, B.1.525.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.525" || $1 ~ /B\.1\.525\..../ {sum+=$2} END {printf "Eta (B.1.525, B.1.525.#):" "\t" sum "\n"}' PHL.tsv
 #Iota
-awk -F"\t" '$1 ~ "B.1.526" || $1 ~ /B\.1\.526\..../ {sum+=$2} END {printf "Iota (B.1.526, B.1.526.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.526" || $1 ~ /B\.1\.526\..../ {sum+=$2} END {printf "Iota (B.1.526, B.1.526.#):" "\t" sum "\n"}' PHL.tsv
 #Mu
-awk -F"\t" '$1 ~ "B.1.621" || $1 ~ /B\.1\.621\..../ {sum+=$2} END {printf "Mu (B.1.621, B.1.621.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "B.1.621" || $1 ~ /B\.1\.621\..../ {sum+=$2} END {printf "Mu (B.1.621, B.1.621.#):" "\t" sum "\n"}' PHL.tsv
 #Lambda
-awk -F"\t" '$1 ~ "C.37" || $1 ~ /C\.37\..../ {sum+=$2} END {printf "Lambda (C.37, C.37.#):" "\t" sum "\n"}' PHLonly.tsv
+awk -F"\t" '$1 ~ "C.37" || $1 ~ /C\.37\..../ {sum+=$2} END {printf "Lambda (C.37, C.37.#):" "\t" sum "\n"}' PHL.tsv
