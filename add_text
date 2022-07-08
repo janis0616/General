@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#For a list of items, add the text and print to terminal. 
+#Make sure there is a file called "list_addtext.txt" in the working directory, which has a list of the values, each value on a separate line.
+while read a; do
+	echo "Consensus_"$a".consensus_threshold_0.6_quality_20"
+done < "list_addtext.txt"
