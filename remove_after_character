@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #For a list of items, remove everything after the first non-digit and output the new values. 
-#Make sure there is a file called "remove.txt" in the working directory, which has a list of the values, each value on a separate line.
+#Make sure there is a file called "list_remove.txt" in the working directory, which has a list of the values, each value on a separate line.
 while read a; do
 	b=${a%%[^0-9]*}
 	echo $b
-done < "remove.txt"
+done < "list_remove.txt"
