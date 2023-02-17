@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#Run this script in a folder with one tsv file of DC sequences (downloaded from GISAID; download --> Sequencing Technology Metadata)
+
+#Make specific files to be used later
+awk -F"\t" '$1 ~ "DC-DFS-PHL"' gisaid*.tsv > PHL.tsv
+awk -F"\t" '$1 ~ "hCoV-19"' gisaid*.tsv > DC.tsv
+
+#Print the number of sequences for DC and DC-DFS-PHL
+printf "# sequences from DC: "
+grep -c "hCoV-19" DC.tsv
+printf "# sequences from DFS-PHL: "
+grep -c "DC-DFS-PHL" PHL.tsv
+
+#Make a spreadsheet of the number/percentage of variants for all labs for DC and DC-DFS-PHL
+awk -F"\t" '{print $13}' DC.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > DC_counts_and_percentages.tsv
+awk -F"\t" '{print $13}' PHL.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > PHL_counts_and_percentages.tsv
+
+#Count sub-lineages under parent lineages
+awk -F"\t" '{print $14"\t"$13}' DC.tsv | sed 's/\./\t/' | sort > DC_2.tsv
+awk -F"\t" '{print $14"\t"$13}' PHL.tsv | sed 's/\./\t/' | sort > PHL_2.tsv
+
+awk -F"\t" '{print "\t"$1"\t"$2}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4"."$5}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4"."$5"."$6}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4"."$5}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
+awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4"."$5"."$6}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
+
+sed '/\.$/d' DC_3.tsv > DC_4.tsv
+sed '/\.$/d' PHL_3.tsv > PHL_4.tsv
+
+sort -k 2 DC_4.tsv > DC_sublineages_combined.tsv
+sort -k 2 PHL_4.tsv > PHL_sublineages_combined.tsv
+
+rm DC.tsv DC_2.tsv DC_3.tsv DC_4.tsv PHL.tsv PHL_2.tsv PHL_3.tsv PHL_4.tsv
+
+
+
