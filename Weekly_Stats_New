@@ -16,9 +16,10 @@ awk -F"\t" '{print $13}' DC.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0
 awk -F"\t" '{print $13}' PHL.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > PHL_counts_and_percentages.tsv
 
 #Count sub-lineages under parent lineages
-awk -F"\t" '{print $14"\t"$13}' DC.tsv | sed 's/\./\t/' | sort > DC_2.tsv
-awk -F"\t" '{print $14"\t"$13}' PHL.tsv | sed 's/\./\t/' | sort > PHL_2.tsv
-
+##Replace each period with a tab
+awk -F"\t" '{print $14"\t"$13}' DC.tsv | sed 's/\./\t/g' | sort > DC_2.tsv
+awk -F"\t" '{print $14"\t"$13}' PHL.tsv | sed 's/\./\t/g' | sort > PHL_2.tsv
+##Count based on 2 columns, 3 columms, 4 columns, etc
 awk -F"\t" '{print "\t"$1"\t"$2}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
 awk -F"\t" '{print "\t"$1"\t"$2"."$3}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
 awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
@@ -29,14 +30,14 @@ awk -F"\t" '{print "\t"$1"\t"$2"."$3}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
 awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
 awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4"."$5}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
 awk -F"\t" '{print "\t"$1"\t"$2"."$3"."$4"."$5"."$6}' PHL_2.tsv | sort | uniq -c >> PHL_3.tsv
-
+##Delete all rows that end in a period
 sed '/\.$/d' DC_3.tsv > DC_4.tsv
 sed '/\.$/d' PHL_3.tsv > PHL_4.tsv
-
-sort -k 2 DC_4.tsv > DC_sublineages_combined.tsv
-sort -k 2 PHL_4.tsv > PHL_sublineages_combined.tsv
-
-rm DC.tsv DC_2.tsv DC_3.tsv DC_4.tsv PHL.tsv PHL_2.tsv PHL_3.tsv PHL_4.tsv
+##Sort based on column 3 (lineage)
+sort -k 3 DC_4.tsv > DC_sublineages_combined.tsv
+sort -k 3 PHL_4.tsv > PHL_sublineages_combined.tsv
+##Remove unneeded files
+rm DC_2.tsv DC_3.tsv DC_4.tsv PHL_2.tsv PHL_3.tsv PHL_4.tsv
 
 
 
