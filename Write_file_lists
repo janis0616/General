@@ -1,0 +1,9 @@
+
+#!/usr/bin/env bash
+#Put the names of the .fna.gz files into .txt files called query_list.txt and reference_list.txt
+#For use with fastANI (many to many)
+for file in *.fna.gz
+do
+	printf ${file}"\n" >> query_list.txt
+	printf ${file}"\n" >> reference_list.txt
+done
