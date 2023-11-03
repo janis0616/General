@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#Copy certain files to a new directory, using a list from a txt file
+echo "Enter the name of the text file"
+read filename 
+echo "Enter the name of the directory"
+read directoryname
+cat ${filename} | xargs -I % cp % ${directoryname}
