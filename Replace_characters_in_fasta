@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#For each fasta file in the current directory, replace the characters ?, Y, R, K, M, or S with the character N
+
+for file in *.fa*; do
+	sed -i 's/\?/N/g' $file 
+	sed -i 's/Y/N/g' $file 
+	sed -i 's/R/N/g' $file 
+	sed -i 's/K/N/g' $file 
+	sed -i 's/M/N/g' $file 
+	sed -i 's/S/N/g' $file 
+done 
