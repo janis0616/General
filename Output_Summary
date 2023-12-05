@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#Creates a summary file that contains the file name and file contents for each file in the directory
+
+for file in *.txt
+do
+
+	printf "${file}" >> card_output.tsv
+	printf "\n" >> card_output.tsv
+	cat "${file}" >> card_output.tsv
+	printf "\n\n" >> card_output.tsv
+done
