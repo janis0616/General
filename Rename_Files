@@ -6,7 +6,7 @@ for f in */contigs.fasta
 do 
 	fp=$(dirname "$f")
 	fl=$(basename "$f")
-	mv "$fp/$fl" "$fp/$fp".fasta
+	cp "$fp/$fl" "$fp/$fp".fasta
 done
 
 cp ./*/*.fasta ./
