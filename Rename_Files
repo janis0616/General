@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#For the working directory, rename each file contigs.fasta that is in a sub-directory; rename it with the sub-directory name
+#Copy all fasta files to the working directory
+
+for f in */contigs.fasta
+do 
+	fp=$(dirname "$f")
+	fl=$(basename "$f")
+	mv "$fp/$fl" "$fp/$fp".fasta
+done
+
+cp ./*/*.fasta ./
