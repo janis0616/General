@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#creates a directory for each fastq file in the working directory
+
+for file in *.fastq*
+do
+	printf $file | awk -F_ '{print $1}' >> list.csv
+done
+
+cat "list.csv" | xargs -L 1 mkdir
