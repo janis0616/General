@@ -18,13 +18,13 @@ printf "# Omicron sequences from DFS-PHL (# clade GRA): "
 grep -c "GRA" PHL.tsv
 
 #Make a spreadsheet of the number/percentage of variants for all labs for DC and DC-DFS-PHL
-awk -F"\t" '{print $13}' DC.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > DC_counts_and_percentages.tsv
-awk -F"\t" '{print $13}' PHL.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > PHL_counts_and_percentages.tsv
+awk -F"\t" '{print $14}' DC.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > DC_counts_and_percentages.tsv
+awk -F"\t" '{print $14}' PHL.tsv | sort | uniq -c | awk '{s+=$1;lines=lines"\n"$0} END {printf "%d Total",s;print lines "\t"}' | awk '!max{max=$1}{s=$1/max*100;c=$1;$1="";printf "%-10s \t %10d \t %7.2f%%\n",$0,c,s;}' > PHL_counts_and_percentages.tsv
 
 #Count sub-lineages under parent lineages
-##Replace each period with a tab
-awk -F"\t" '{print $14"\t"$13}' DC.tsv | sed 's/\./\t/g' | sort > DC_2.tsv
-awk -F"\t" '{print $14"\t"$13}' PHL.tsv | sed 's/\./\t/g' | sort > PHL_2.tsv
+##Remove comments in parentheses and replace each period with a tab
+awk -F"\t" '{print $15"\t"$14}' DC.tsv |  sed -r 's/.[(].*//g' | sed 's/\./\t/g' | sort > DC_2.tsv
+awk -F"\t" '{print $15"\t"$14}' PHL.tsv |  sed -r 's/.[(].*//g' | sed 's/\./\t/g' | sort > PHL_2.tsv
 ##Count based on 2 columns, 3 columms, 4 columns, etc
 awk -F"\t" '{print "\t"$1"\t"$2}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
 awk -F"\t" '{print "\t"$1"\t"$2"."$3}' DC_2.tsv | sort | uniq -c >> DC_3.tsv
@@ -44,6 +44,4 @@ sort -k 3 DC_4.tsv > DC_sublineages_combined.tsv
 sort -k 3 PHL_4.tsv > PHL_sublineages_combined.tsv
 ##Remove unneeded files
 rm DC_2.tsv DC_3.tsv DC_4.tsv PHL_2.tsv PHL_3.tsv PHL_4.tsv
-
-
 
