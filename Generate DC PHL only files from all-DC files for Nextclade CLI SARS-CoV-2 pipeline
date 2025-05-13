@@ -6,11 +6,11 @@
 #filter tsv file
 for tsv_file in *.tsv
 do
-	awk -F"\t" '$19 ~ "Public Health Lab" {print $0}' ${tsv_file} > "PHLonly_${tsv_file}"
+	awk -F"\t" '$1 ~ "DC-DFS-PHL" {print $0}' ${tsv_file} > "PHLonly_${tsv_file}"
 done
 
 #filter fasta file
 for fasta_file in *.fasta
 do
-	awk '/^>/{if($0 ~ /PHL/){f=1} else {f=0;}} f==1{print;}' ${fasta_file}  > "PHLonly_${fasta_file}"
+	awk '/^>/{if($0 ~ /DC-DFS-PHL/){f=1} else {f=0;}} f==1{print;}' ${fasta_file}  > "PHLonly_${fasta_file}"
 done 
