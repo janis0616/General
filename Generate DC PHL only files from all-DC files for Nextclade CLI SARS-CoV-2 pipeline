@@ -6,7 +6,8 @@
 #filter tsv file
 for tsv_file in *.tsv
 do
-	awk -F"\t" '$1 ~ "DC-DFS-PHL" {print $0}' ${tsv_file} > "PHLonly_${tsv_file}"
+	printf "strain\tvirus\tgisaid_epi_isl\tdate\tregion\tcountry\tdivision\tlocation\tregion_exposure\tcountry_exposure\tdivision_exposure\tsegment\tlength\thost\tage\tsex\tpangolin_lineage\tGISAID_clade\toriginating_lab\tsubmitting_lab\tauthors\turl\ttitle\tpaper_url\tdate_submitted\tpurpose_of_sequencing\n" > "PHLonly_${tsv_file}"
+	awk -F"\t" '$1 ~ "DC-DFS-PHL" {print $0}' ${tsv_file} >> "PHLonly_${tsv_file}"
 done
 
 #filter fasta file
